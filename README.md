@@ -40,4 +40,4 @@ npm run dev
 
 Open:
 
-http://localhost:3000
+PREVIEW:[http://localhost:3000](https://ai-notes-steel-zeta.vercel.app/)
