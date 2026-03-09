@@ -4,15 +4,13 @@ import { useState, useEffect } from "react";
 export default function Home() {
   const [note, setNote] = useState("");
   const [notes, setNotes] = useState<string[]>([]);
-
   // load notes from localStorage
   useEffect(() => {
     const saved = localStorage.getItem("notes");
 
-    if (!saved) return;
-
-    const parsed: string[] = JSON.parse(saved);
-    setNotes(parsed);
+    if (saved) {
+      setNotes(JSON.parse(saved));
+    }
   }, []);
   // save notes to localStorage
   useEffect(() => {
@@ -29,7 +27,7 @@ export default function Home() {
     const updated = notes.filter((_, i) => i !== index);
     setNotes(updated);
   };
-  const summarizeNote = async (text: string) => {
+  const summarize = async (text: string) => {
     const res = await fetch("/api/summarize", {
       method: "POST",
       body: JSON.stringify({ text }),
@@ -38,6 +36,7 @@ export default function Home() {
     const data = await res.json();
     alert(data.summary);
   };
+
   return (
     <div className="p-10 max-w-xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">AI Notes</h1>
@@ -59,27 +58,15 @@ export default function Home() {
 
       <div className="mt-6 space-y-3">
         {notes.map((n, i) => (
-          <div
-            key={i}
-            className="border p-3 rounded flex justify-between items-center"
-          >
-            <span>{n}</span>
+          <div key={i} className="border p-3 rounded">
+            <p>{n}</p>
 
-            <div className="flex gap-2">
-              <button
-                onClick={() => summarizeNote(n)}
-                className="text-blue-500 text-sm"
-              >
-                Summarize
-              </button>
-
-              <button
-                onClick={() => deleteNote(i)}
-                className="text-red-500 text-sm"
-              >
-                Delete
-              </button>
-            </div>
+            <button
+              onClick={() => summarize(n)}
+              className="mt-2 text-sm bg-blue-500 text-white px-2 py-1 rounded"
+            >
+              ✨ Summarize
+            </button>
           </div>
         ))}
       </div>
