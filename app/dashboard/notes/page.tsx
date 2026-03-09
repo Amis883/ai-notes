@@ -18,9 +18,9 @@ export default function NotesPage() {
   ];
 
   return (
-    <div>
-      <div className="flex justify-between mb-6">
-        <h1 className="text-2xl font-bold">Notes</h1>
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold">Notes</h1>
         <NewNoteButton />
       </div>
 

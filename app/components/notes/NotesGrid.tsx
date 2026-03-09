@@ -7,7 +7,7 @@ type Note = {
 };
 export default function NotesGrid({ notes }: { notes: Note[] }) {
   return (
-    <div className="grid grid-cols-3 gap-6">
+    <div className="p-4 rounded-xl border hover:shadow-lg transition bg-white">
       {notes.map((note) => (
         <NoteCard key={note.id} {...note} />
       ))}
