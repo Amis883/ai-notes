@@ -68,23 +68,27 @@ export default function Home() {
     }
   };
   return (
-    <div className={`${dark ? "dark" : ""} p-10 max-w-2xl mx-auto`}>
-      <Header dark={dark} toggleDark={() => setDark(!dark)} />
-      <NoteEditor note={note} setNote={setNote} addNote={addNote} />
+    <div
+      className={`${dark ? "dark" : ""} min-h-screen bg-gray-50 dark:bg-gray-900 p-10`}
+    >
+      <div className="max-w-2xl mx-auto">
+        <Header dark={dark} toggleDark={() => setDark(!dark)} />
+        <NoteEditor note={note} setNote={setNote} addNote={addNote} />
 
-      <SearchBar search={search} setSearch={setSearch} />
+        <SearchBar search={search} setSearch={setSearch} />
 
-      <NoteList
-        notes={filteredNotes}
-        editingId={editingId}
-        editingText={editingText}
-        setEditingText={setEditingText}
-        startEdit={startEdit}
-        saveEdit={saveEdit}
-        deleteNote={deleteNote}
-        summarize={summarize}
-        loadingId={loadingId}
-      />
+        <NoteList
+          notes={filteredNotes}
+          editingId={editingId}
+          editingText={editingText}
+          setEditingText={setEditingText}
+          startEdit={startEdit}
+          saveEdit={saveEdit}
+          deleteNote={deleteNote}
+          summarize={summarize}
+          loadingId={loadingId}
+        />
+      </div>
     </div>
   );
 }

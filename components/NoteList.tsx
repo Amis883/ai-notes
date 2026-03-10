@@ -16,9 +16,10 @@ type Props = {
 export default function NoteList(props: Props) {
   if (props.notes.length === 0) {
     return (
-      <p className="text-center text-gray-400 mt-10">
-        No notes yet. Add your first note.
-      </p>
+     <div className="text-center py-16 text-gray-400">
+      <p className="text-lg mb-2">📝 No notes yet</p>
+      <p className="text-sm">Start by writing your first note</p>
+    </div>
     );
   }
 
