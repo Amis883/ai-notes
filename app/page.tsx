@@ -6,6 +6,7 @@ type Note = { id: number; text: string; summary?: string };
 
 export default function Home() {
   const [note, setNote] = useState("");
+  const [dark, setDark] = useState(false);
   const [search, setSearch] = useState("");
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editingText, setEditingText] = useState("");
@@ -78,22 +79,25 @@ export default function Home() {
   );
 
   return (
-    <div className="p-10 max-w-xl mx-auto">
+    <div className={`${dark ? "dark" : ""} p-10 max-w-2xl mx-auto`}>
       <h1 className="text-4xl font-bold mb-8 text-center">🧠 AI Notes</h1>
-
+      <button
+        onClick={() => setDark(!dark)}
+        className="mb-4 px-3 py-1 border rounded"
+      >
+        {dark ? "Light Mode" : "Dark Mode"}
+      </button>
       <textarea
         className="w-full border p-3 rounded mb-4"
         value={note}
         onChange={(e) => setNote(e.target.value)}
       />
-
       <button
         onClick={addNote}
         className="bg-black text-white px-4 py-2 rounded"
       >
         Add Note
       </button>
-
       <div className="mt-6 space-y-3">
         <input
           type="text"
@@ -110,7 +114,7 @@ export default function Home() {
         {filteredNotes.map((n) => (
           <div
             key={n.id}
-            className="bg-white shadow-md rounded-xl p-4 space-y-3 border hover:shadow-lg transition"
+            className="bg-white dark:bg-gray-800 shadow-md rounded-xl p-4 space-y-2 border dark:border-gray-700 hover:shadow-lg transition"
           >
             {editingId === n.id ? (
               <textarea
@@ -119,7 +123,7 @@ export default function Home() {
                 className="w-full border p-2 rounded"
               />
             ) : (
-              <p className="text-xs text-gray-400">
+              <p className="text-gray-800 dark:text-gray-200">
                 {n.text.length} characters
               </p>
             )}
