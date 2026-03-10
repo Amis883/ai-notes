@@ -2,31 +2,61 @@
 
 import { useState, useEffect } from "react";
 
+type Note = { id: number; text: string; summary?: string };
+
 export default function Home() {
   const [note, setNote] = useState("");
-
-  const [notes, setNotes] = useState<string[]>(() => {
-    if (typeof window === "undefined") return [];
-
-    const saved = localStorage.getItem("notes");
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [notes, setNotes] = useState<Note[]>([]);
+  const [loadingId, setLoadingId] = useState<number | null>(null);
 
   const addNote = () => {
     if (!note.trim()) return;
 
-    setNotes((prev) => [...prev, note]);
+    setNotes((prev) => [
+      ...prev,
+      {
+        id: Date.now(),
+        text: note,
+      },
+    ]);
+
     setNote("");
   };
 
-  const deleteNote = (index: number) => {
-    setNotes((prev) => prev.filter((_, i) => i !== index));
+  const deleteNote = (id: number) => {
+    setNotes((prev) => prev.filter((n) => n.id !== id));
+  };
+  const summarize = async (id: number, text: string) => {
+    try {
+      setLoadingId(id);
+
+      const res = await fetch("/api/summarize", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text }),
+      });
+
+      const data = await res.json();
+
+      setNotes((prev) =>
+        prev.map((n) => (n.id === id ? { ...n, summary: data.summary } : n)),
+      );
+    } catch (error) {
+      console.error("Summarize error:", error);
+    } finally {
+      setLoadingId(null);
+    }
   };
 
-  const summarize = (text: string) => {
-    alert("AI summary for: " + text.slice(0, 50));
-  };
+  // load notes from localStorage
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem("notes") || "[]");
+    setNotes(saved);
+  }, []);
 
+  // save notes
   useEffect(() => {
     localStorage.setItem("notes", JSON.stringify(notes));
   }, [notes]);
@@ -49,23 +79,25 @@ export default function Home() {
       </button>
 
       <div className="mt-6 space-y-3">
-        {notes.map((n, i) => (
-          <div key={i} className="border p-3 rounded space-y-2">
-            <p>{n}</p>
+        {notes.map((n) => (
+          <div key={n.id} className="border p-3 rounded space-y-2">
+            <p>{n.text}</p>
+
+            {n.summary && <p className="text-sm text-gray-600">{n.summary}</p>}
 
             <div className="flex gap-2">
               <button
-                onClick={() => deleteNote(i)}
+                onClick={() => deleteNote(n.id)}
                 className="bg-red-500 text-white px-3 py-1 rounded"
               >
                 Delete
               </button>
 
               <button
-                onClick={() => summarize(n)}
+                onClick={() => summarize(n.id, n.text)}
                 className="bg-blue-500 text-white px-3 py-1 rounded"
               >
-                Summarize
+                {loadingId === n.id ? "Summarizing..." : "Summarize"}
               </button>
             </div>
           </div>
