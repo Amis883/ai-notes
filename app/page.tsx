@@ -44,7 +44,7 @@ export default function Home() {
         prev.map((n) => (n.id === id ? { ...n, summary: data.summary } : n)),
       );
     } catch (error) {
-      console.error("Summarize error:", error);
+      console.error("Summarize failed", error);
     } finally {
       setLoadingId(null);
     }
@@ -63,7 +63,7 @@ export default function Home() {
 
   return (
     <div className="p-10 max-w-xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">AI Notes</h1>
+      <h1 className="text-4xl font-bold mb-8 text-center">🧠 AI Notes</h1>
 
       <textarea
         className="w-full border p-3 rounded mb-4"
@@ -80,11 +80,17 @@ export default function Home() {
 
       <div className="mt-6 space-y-3">
         {notes.map((n) => (
-          <div key={n.id} className="border p-3 rounded space-y-2">
+          <div
+            key={n.id}
+            className="bg-white shadow-md rounded-xl p-4 space-y-3 border hover:shadow-lg transition"
+          >
             <p>{n.text}</p>
 
-            {n.summary && <p className="text-sm text-gray-600">{n.summary}</p>}
-
+            {n.summary && (
+              <div className="bg-gray-100 p-3 rounded-md text-sm text-gray-700">
+                <strong>Summary:</strong> {n.summary}
+              </div>
+            )}
             <div className="flex gap-2">
               <button
                 onClick={() => deleteNote(n.id)}
@@ -94,10 +100,14 @@ export default function Home() {
               </button>
 
               <button
+                disabled={loadingId === n.id}
                 onClick={() => summarize(n.id, n.text)}
-                className="bg-blue-500 text-white px-3 py-1 rounded"
+                className="bg-blue-500 text-white px-3 py-1 rounded disabled:opacity-50"
               >
-                {loadingId === n.id ? "Summarizing..." : "Summarize"}
+                summarize
+                {loadingId === n.id && (
+                  <p className="text-sm text-gray-400">Generating summary...</p>
+                )}
               </button>
             </div>
           </div>
