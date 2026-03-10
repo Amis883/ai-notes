@@ -7,14 +7,24 @@ export default function Home() {
 
   const [notes, setNotes] = useState<string[]>(() => {
     if (typeof window === "undefined") return [];
+
     const saved = localStorage.getItem("notes");
     return saved ? JSON.parse(saved) : [];
   });
 
   const addNote = () => {
     if (!note.trim()) return;
-    setNotes([...notes, note]);
+
+    setNotes((prev) => [...prev, note]);
     setNote("");
+  };
+
+  const deleteNote = (index: number) => {
+    setNotes((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const summarize = (text: string) => {
+    alert("AI summary for: " + text.slice(0, 50));
   };
 
   useEffect(() => {
@@ -40,8 +50,24 @@ export default function Home() {
 
       <div className="mt-6 space-y-3">
         {notes.map((n, i) => (
-          <div key={i} className="border p-3 rounded">
-            {n}
+          <div key={i} className="border p-3 rounded space-y-2">
+            <p>{n}</p>
+
+            <div className="flex gap-2">
+              <button
+                onClick={() => deleteNote(i)}
+                className="bg-red-500 text-white px-3 py-1 rounded"
+              >
+                Delete
+              </button>
+
+              <button
+                onClick={() => summarize(n)}
+                className="bg-blue-500 text-white px-3 py-1 rounded"
+              >
+                Summarize
+              </button>
+            </div>
           </div>
         ))}
       </div>
